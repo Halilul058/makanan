@@ -1,73 +1,314 @@
 import 'package:flutter/material.dart';
 
+import '../../services/admin_service.dart';
 import 'food_list_screen.dart';
 
 class AdminDashboardScreen
-    extends StatelessWidget {
+    extends StatefulWidget {
 
   const AdminDashboardScreen({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  State<AdminDashboardScreen>
+  createState() =>
+      _AdminDashboardScreenState();
+}
+
+class _AdminDashboardScreenState
+    extends State<
+        AdminDashboardScreen> {
+
+  int totalMenu = 0;
+  int totalOrder = 0;
+  int revenue = 0;
+
+  Future<void> loadData()
+  async {
+
+    final service =
+    AdminService();
+
+    totalMenu =
+    await service
+        .getTotalMenu();
+
+    totalOrder =
+    await service
+        .getTotalOrder();
+
+    revenue =
+    await service
+        .getRevenue();
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadData();
+  }
+
+  @override
+  Widget build(
+      BuildContext context) {
 
     return Scaffold(
+
       appBar: AppBar(
-        title:
-        const Text(
+        title: const Text(
           "Admin Ra Food",
         ),
       ),
 
-      body: Padding(
+      body: SingleChildScrollView(
         padding:
-        const EdgeInsets.all(20),
+        const EdgeInsets.all(
+            20),
 
-        child: GridView.count(
-          crossAxisCount: 2,
-
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
+        child: Column(
+          crossAxisAlignment:
+          CrossAxisAlignment
+              .start,
 
           children: [
 
-            GestureDetector(
-              onTap: () {
+            Container(
+              width:
+              double.infinity,
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                    const FoodListScreen(),
-                  ),
-                );
-              },
+              padding:
+              const EdgeInsets
+                  .all(20),
 
-              child: Card(
-                child: Column(
-                  mainAxisAlignment:
-                  MainAxisAlignment.center,
+              decoration:
+              BoxDecoration(
+                borderRadius:
+                BorderRadius
+                    .circular(
+                    20),
 
-                  children: const [
-
-                    Icon(
-                      Icons.fastfood,
-                      size: 50,
-                    ),
-
-                    SizedBox(
-                        height: 10),
-
-                    Text(
-                      "Kelola Menu",
-                    )
+                gradient:
+                const LinearGradient(
+                  colors: [
+                    Color(
+                        0xffFF8A00),
+                    Color(
+                        0xffFFA940),
                   ],
                 ),
+              ),
+
+              child: const Column(
+                crossAxisAlignment:
+                CrossAxisAlignment
+                    .start,
+
+                children: [
+
+                  Text(
+                    "Selamat Datang 👨‍🍳",
+                    style:
+                    TextStyle(
+                      color:
+                      Colors.white,
+                      fontSize:
+                      24,
+                      fontWeight:
+                      FontWeight
+                          .bold,
+                    ),
+                  ),
+
+                  SizedBox(
+                    height: 8,
+                  ),
+
+                  Text(
+                    "Kelola warung dengan mudah",
+                    style:
+                    TextStyle(
+                      color:
+                      Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(
+              height: 20,
+            ),
+
+            Row(
+              children: [
+
+                Expanded(
+                  child:
+                  statCard(
+                    "Menu",
+                    totalMenu
+                        .toString(),
+                    Icons.fastfood,
+                  ),
+                ),
+
+                const SizedBox(
+                  width: 12,
+                ),
+
+                Expanded(
+                  child:
+                  statCard(
+                    "Order",
+                    totalOrder
+                        .toString(),
+                    Icons.receipt,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(
+              height: 15,
+            ),
+
+            Container(
+              width:
+              double.infinity,
+
+              padding:
+              const EdgeInsets
+                  .all(20),
+
+              decoration:
+              BoxDecoration(
+                color:
+                Colors.white,
+                borderRadius:
+                BorderRadius
+                    .circular(
+                    20),
+              ),
+
+              child: Column(
+                crossAxisAlignment:
+                CrossAxisAlignment
+                    .start,
+
+                children: [
+
+                  const Text(
+                    "Pendapatan",
+                  ),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  Text(
+                    "Rp $revenue",
+                    style:
+                    const TextStyle(
+                      fontSize:
+                      24,
+                      fontWeight:
+                      FontWeight
+                          .bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(
+              height: 25,
+            ),
+
+            SizedBox(
+              width:
+              double.infinity,
+
+              child:
+              ElevatedButton.icon(
+                icon:
+                const Icon(
+                  Icons.fastfood,
+                ),
+
+                label:
+                const Text(
+                  "Kelola Menu",
+                ),
+
+                onPressed:
+                    () async {
+
+                  await Navigator
+                      .push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) =>
+                      const FoodListScreen(),
+                    ),
+                  );
+
+                  loadData();
+                },
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget statCard(
+      String title,
+      String value,
+      IconData icon,
+      ) {
+
+    return Container(
+      padding:
+      const EdgeInsets.all(
+          20),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius:
+        BorderRadius.circular(
+            20),
+      ),
+
+      child: Column(
+        children: [
+
+          Icon(
+            icon,
+            size: 35,
+          ),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          Text(title),
+
+          Text(
+            value,
+            style:
+            const TextStyle(
+              fontSize: 22,
+              fontWeight:
+              FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }

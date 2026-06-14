@@ -9,6 +9,7 @@ import 'profile_screen.dart';
 import '../../services/food_service.dart';
 
 import 'food_detail_screen.dart';
+import 'order_history_screen.dart';
 
 class UserHomeScreen extends StatefulWidget {
   const UserHomeScreen({super.key});
@@ -26,7 +27,7 @@ class _UserHomeScreenState
   final pages = [
     const HomePage(),
     const CartScreen(),
-    const HistoryScreen(),
+    const OrderHistoryScreen(),
     const ProfileScreen(),
     const PromoBanner(),
   ];
@@ -99,10 +100,36 @@ class _HomePageState
   List<Map<String, dynamic>>
   foods = [];
 
+  List<Map<String, dynamic>>
+  filteredFoods = [];
+
   Future<void> loadData() async {
 
     foods =
     await service.getFoods();
+
+    filteredFoods =
+        List.from(foods);
+
+    setState(() {});
+  }
+
+  Future<void> searchFood(
+      String keyword) async {
+
+    if (keyword.isEmpty) {
+
+      filteredFoods =
+          List.from(foods);
+
+    } else {
+
+      filteredFoods =
+      await service
+          .searchFoods(
+        keyword,
+      );
+    }
 
     setState(() {});
   }
@@ -142,6 +169,9 @@ class _HomePageState
             ),
 
             TextField(
+              onChanged:
+              searchFood,
+
               decoration:
               InputDecoration(
                 hintText:
@@ -196,14 +226,14 @@ class _HomePageState
                 Axis.horizontal,
 
                 itemCount:
-                foods.length,
+                filteredFoods.length,
 
                 itemBuilder:
                     (context,
                     index) {
 
                   final food =
-                  foods[index];
+                  filteredFoods[index];
 
                   return FoodCard(
                     name:

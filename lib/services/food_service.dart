@@ -28,6 +28,8 @@ class FoodService {
     );
   }
 
+
+
   Future<int> updateFood(
       Map<String, dynamic> food) async {
 
@@ -50,6 +52,20 @@ class FoodService {
       'foods',
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<List<Map<String, dynamic>>>
+  searchFoods(String keyword) async {
+
+    final db =
+    await _db.database;
+
+    return await db.query(
+      'foods',
+      where: 'name LIKE ?',
+      whereArgs: ['%$keyword%'],
+      orderBy: 'id DESC',
     );
   }
 }

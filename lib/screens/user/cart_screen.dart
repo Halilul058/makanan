@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../services/cart_service.dart';
+import 'checkout_screen.dart';
 
 class CartScreen
     extends StatefulWidget {
@@ -200,10 +201,20 @@ class _CartScreenState
                     height: 10),
 
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
 
-                  child:
-                  const Text(
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                        const CheckoutScreen(),
+                      ),
+                    ).then((_) {
+                      loadData();
+                    });
+                  },
+
+                  child: const Text(
                     "Checkout",
                   ),
                 ),
