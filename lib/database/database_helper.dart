@@ -63,9 +63,12 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE carts(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        food_id INTEGER,
-        qty INTEGER,
+
+        user_id INTEGER NOT NULL,
+
+        food_id INTEGER NOT NULL,
+
+        qty INTEGER NOT NULL,
 
         FOREIGN KEY(user_id)
         REFERENCES users(id)
@@ -75,7 +78,7 @@ class DatabaseHelper {
         REFERENCES foods(id)
         ON DELETE CASCADE
       )
-    ''');
+      ''');
 
     await db.execute('''
       CREATE TABLE orders(
@@ -123,6 +126,10 @@ class DatabaseHelper {
         ON DELETE CASCADE
       )
     ''');
+
+
+
+
 
     await _seedAdmin(db);
   }

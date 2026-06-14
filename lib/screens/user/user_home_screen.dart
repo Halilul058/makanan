@@ -6,6 +6,9 @@ import '../../widgets/promo_banner.dart';
 import 'cart_screen.dart';
 import 'history_screen.dart';
 import 'profile_screen.dart';
+import '../../services/food_service.dart';
+
+import 'food_detail_screen.dart';
 
 class UserHomeScreen extends StatefulWidget {
   const UserHomeScreen({super.key});
@@ -76,11 +79,44 @@ class _UserHomeScreenState
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+
+  const HomePage({
+    super.key,
+  });
+
+  @override
+  State<HomePage> createState() =>
+      _HomePageState();
+}
+
+class _HomePageState
+    extends State<HomePage> {
+
+  final FoodService service =
+  FoodService();
+
+  List<Map<String, dynamic>>
+  foods = [];
+
+  Future<void> loadData() async {
+
+    foods =
+    await service.getFoods();
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: SingleChildScrollView(
         padding:
@@ -101,7 +137,9 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
 
             TextField(
               decoration:
@@ -115,18 +153,18 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
 
             const PromoBanner(),
-            SizedBox(
-              width: double.infinity,
-              child: PromoBanner(),
+
+            const SizedBox(
+              height: 25,
             ),
 
-            const SizedBox(height: 25),
-
             const Text(
-              "Kategori",
+              "Menu Tersedia",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight:
@@ -134,75 +172,66 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 12),
-
-            Wrap(
-              spacing: 10,
-              children: const [
-                Chip(
-                  label:
-                  Text("Makanan"),
-                ),
-                Chip(
-                  label:
-                  Text("Minuman"),
-                ),
-                Chip(
-                  label:
-                  Text("Snack"),
-                ),
-              ],
+            const SizedBox(
+              height: 15,
             ),
 
-            const SizedBox(height: 25),
-
-            const Text(
-              "Menu Favorit",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight:
-                FontWeight.bold,
+            foods.isEmpty
+                ? const Padding(
+              padding:
+              EdgeInsets.all(
+                  20),
+              child: Center(
+                child: Text(
+                  "Belum ada menu",
+                ),
               ),
-            ),
+            )
+                : SizedBox(
+              height: 250,
 
-            const SizedBox(height: 15),
-
-            SizedBox(
-              height: 230,
-
-              child: ListView(
+              child:
+              ListView.builder(
                 scrollDirection:
                 Axis.horizontal,
 
-                children: const [
+                itemCount:
+                foods.length,
 
-                  FoodCard(
-                    name:
-                    "Nasi Goreng",
-                    price:
-                    "Rp15.000",
-                    image:
-                    "https://picsum.photos/300",
-                  ),
+                itemBuilder:
+                    (context,
+                    index) {
 
-                  FoodCard(
-                    name:
-                    "Ayam Geprek",
-                    price:
-                    "Rp18.000",
-                    image:
-                    "https://picsum.photos/301",
-                  ),
+                  final food =
+                  foods[index];
 
-                  FoodCard(
+                  return FoodCard(
                     name:
-                    "Mie Ayam",
+                    food['name'],
+
                     price:
-                    "Rp12.000",
+                    food['price'],
+
                     image:
-                    "https://picsum.photos/302",
-                  ),
-                ],
+                    food['image'],
+
+                    onTap: () {
+
+                      Navigator.push(
+                        context,
+
+                        MaterialPageRoute(
+                          builder:
+                              (_) =>
+                              FoodDetailScreen(
+                                food:
+                                food,
+                              ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
