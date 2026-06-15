@@ -67,10 +67,17 @@ class _CartScreenState
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: const Color(0xffF5F6FA),
+
       appBar: AppBar(
-        title:
-        const Text(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
           "Keranjang",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
 
@@ -79,100 +86,243 @@ class _CartScreenState
 
           Expanded(
             child: carts.isEmpty
+
                 ? const Center(
-              child: Text(
-                "Keranjang Kosong",
+              child: Column(
+                mainAxisAlignment:
+                MainAxisAlignment.center,
+
+                children: [
+
+                  Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 80,
+                    color: Colors.grey,
+                  ),
+
+                  SizedBox(height: 10),
+
+                  Text(
+                    "Keranjang Kosong",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight:
+                      FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             )
+
                 : ListView.builder(
-              itemCount:
-              carts.length,
+              padding:
+              const EdgeInsets.all(16),
+
+              itemCount: carts.length,
 
               itemBuilder:
-                  (context,index){
+                  (context, index) {
 
                 final item =
                 carts[index];
 
+                return Container(
+                  margin:
+                  const EdgeInsets.only(
+                    bottom: 15,
+                  ),
 
-                return ListTile(
-
-                  leading:
-                  Image.file(
-                    File(
-                      item[
-                      'image'],
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                    BorderRadius.circular(
+                      20,
                     ),
-                    width: 50,
-                  ),
 
-                  title: Text(
-                    item['name'],
-                  ),
-
-                  subtitle: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
-
-                    children: [
-
-                      Text(
-                        "Rp ${item['price']}",
-                      ),
-
-                      Text(
-                        "Subtotal : Rp ${item['price'] * item['qty']}",
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset:
+                        const Offset(
+                          0,
+                          3,
+                        ),
                       ),
                     ],
                   ),
 
-                  trailing:
-                  Row(
-                    mainAxisSize:
-                    MainAxisSize.min,
+                  child: Padding(
+                    padding:
+                    const EdgeInsets.all(
+                      12,
+                    ),
 
-                    children: [
+                    child: Row(
+                      children: [
 
-                      IconButton(
-                        icon: const Icon(
-                          Icons.remove_circle,
+                        ClipRRect(
+                          borderRadius:
+                          BorderRadius.circular(
+                            15,
+                          ),
+
+                          child: Image.file(
+                            File(
+                              item['image'],
+                            ),
+
+                            width: 85,
+                            height: 85,
+                            fit: BoxFit.cover,
+                          ),
                         ),
 
-                        onPressed: () async {
-
-                          await service
-                              .decreaseQty(
-                            item['id'],
-                            item['qty'],
-                          );
-
-                          loadData();
-                        },
-                      ),
-
-                      Text(
-                        item['qty']
-                            .toString(),
-                      ),
-
-                      IconButton(
-                        icon: const Icon(
-                          Icons.add_circle,
+                        const SizedBox(
+                          width: 12,
                         ),
 
-                        onPressed: () async {
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
 
-                          await service
-                              .increaseQty(
-                            item['id'],
-                          );
+                            children: [
 
-                          loadData();
-                        },
-                      ),
-                    ],
-                  )
+                              Text(
+                                item['name'],
+                                style:
+                                const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight:
+                                  FontWeight.bold,
+                                ),
+                              ),
 
+                              const SizedBox(
+                                height: 5,
+                              ),
+
+                              Text(
+                                "Rp ${item['price']}",
+                                style:
+                                TextStyle(
+                                  color:
+                                  Colors.grey.shade700,
+                                ),
+                              ),
+
+                              const SizedBox(
+                                height: 8,
+                              ),
+
+                              Text(
+                                "Subtotal : Rp ${item['price'] * item['qty']}",
+                                style:
+                                const TextStyle(
+                                  color:
+                                  Colors.orange,
+                                  fontWeight:
+                                  FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Column(
+                          children: [
+
+                            Row(
+                              children: [
+
+                                CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor:
+                                  Colors.orange
+                                      .shade100,
+
+                                  child: IconButton(
+                                    padding:
+                                    EdgeInsets.zero,
+
+                                    icon:
+                                    const Icon(
+                                      Icons.remove,
+                                      size: 18,
+                                    ),
+
+                                    onPressed:
+                                        () async {
+
+                                      await service
+                                          .decreaseQty(
+                                        item['id'],
+                                        item['qty'],
+                                      );
+
+                                      loadData();
+                                    },
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding:
+                                  const EdgeInsets
+                                      .symmetric(
+                                    horizontal:
+                                    10,
+                                  ),
+
+                                  child: Text(
+                                    item['qty']
+                                        .toString(),
+
+                                    style:
+                                    const TextStyle(
+                                      fontWeight:
+                                      FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+
+                                CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor:
+                                  Colors.orange,
+
+                                  child: IconButton(
+                                    padding:
+                                    EdgeInsets.zero,
+
+                                    icon:
+                                    const Icon(
+                                      Icons.add,
+                                      size: 18,
+                                      color:
+                                      Colors.white,
+                                    ),
+
+                                    onPressed:
+                                        () async {
+
+                                      await service
+                                          .increaseQty(
+                                        item['id'],
+                                      );
+
+                                      loadData();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
@@ -180,45 +330,107 @@ class _CartScreenState
 
           Container(
             padding:
-            const EdgeInsets.all(
-                20),
+            const EdgeInsets.all(20),
 
-            child: Column(
-              children: [
+            decoration:
+            const BoxDecoration(
+              color: Colors.white,
 
-                Text(
-                  "Total : Rp $total",
-                  style:
-                  const TextStyle(
-                    fontSize: 20,
-                    fontWeight:
-                    FontWeight
-                        .bold,
-                  ),
-                ),
+              borderRadius:
+              BorderRadius.vertical(
+                top: Radius.circular(30),
+              ),
+            ),
 
-                const SizedBox(
-                    height: 10),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize:
+                MainAxisSize.min,
 
-                ElevatedButton(
-                  onPressed: () {
+                children: [
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                        const CheckoutScreen(),
+                  Row(
+                    mainAxisAlignment:
+                    MainAxisAlignment
+                        .spaceBetween,
+
+                    children: [
+
+                      const Text(
+                        "Total Pembayaran",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
-                    ).then((_) {
-                      loadData();
-                    });
-                  },
 
-                  child: const Text(
-                    "Checkout",
+                      Text(
+                        "Rp $total",
+                        style:
+                        const TextStyle(
+                          fontSize: 24,
+                          fontWeight:
+                          FontWeight.bold,
+                          color:
+                          Colors.orange,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+
+                  const SizedBox(
+                    height: 15,
+                  ),
+
+                  SizedBox(
+                    width:
+                    double.infinity,
+                    height: 55,
+
+                    child:
+                    ElevatedButton(
+                      style:
+                      ElevatedButton
+                          .styleFrom(
+                        backgroundColor:
+                        Colors.orange,
+
+                        shape:
+                        RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(
+                            16,
+                          ),
+                        ),
+                      ),
+
+                      onPressed: () {
+
+                        Navigator.push(
+                          context,
+
+                          MaterialPageRoute(
+                            builder: (_) =>
+                            const CheckoutScreen(),
+                          ),
+                        ).then((_) {
+                          loadData();
+                        });
+                      },
+
+                      child: const Text(
+                        "Checkout",
+                        style: TextStyle(
+                          color:
+                          Colors.white,
+                          fontSize: 16,
+                          fontWeight:
+                          FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

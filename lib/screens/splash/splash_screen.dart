@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../config/app_colors.dart';
-import '../../config/routes.dart';
+import '../../providers/auth_provider.dart';
+import '../auth/login_screen.dart';
+import '../admin/admin_dashboard_screen.dart';
+import '../user/user_home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,51 +23,116 @@ class _SplashScreenState
   void initState() {
     super.initState();
 
+    startApp();
+  }
+
+  Future<void> startApp() async {
+
+    final auth =
+    context.read<AuthProvider>();
+
+    await auth.loadSession();
+
     Timer(
-      const Duration(seconds: 3),
+      const Duration(seconds: 2),
           () {
-        Navigator.pushReplacementNamed(
-          context,
-          AppRoutes.login,
-        );
+
+        if (!mounted) return;
+
+        if (!auth.isLoggedIn) {
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+              const LoginScreen(),
+            ),
+          );
+
+          return;
+        }
+
+        if (auth.role == "admin") {
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+              const AdminDashboardScreen(),
+            ),
+          );
+
+        } else {
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+              const UserHomeScreen(),
+            ),
+          );
+        }
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primary,
 
-      body: Center(
+    return Scaffold(
+
+      body: Container(
+
+        width: double.infinity,
+
+        decoration:
+        const BoxDecoration(
+          gradient:
+          LinearGradient(
+            colors: [
+              Color(0xffFF8A00),
+              Color(0xffFFA940),
+            ],
+            begin:
+            Alignment.topLeft,
+            end:
+            Alignment.bottomRight,
+          ),
+        ),
+
         child: Column(
           mainAxisAlignment:
           MainAxisAlignment.center,
 
-          children: const [
-            Icon(
-              Icons.restaurant_menu,
-              size: 90,
-              color: Colors.white,
+          children: [
+
+            Image.asset(
+              "assets/images/logo.png",
+              height: 120,
             ),
 
-            SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
 
-            Text(
+            const Text(
               "Ra Food",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+                fontSize: 34,
+                fontWeight:
+                FontWeight.bold,
               ),
             ),
 
-            SizedBox(height: 8),
+            const SizedBox(
+              height: 10,
+            ),
 
-            Text(
+            const Text(
               "Warung Makanan Digital",
               style: TextStyle(
-                color: Colors.white70,
+                color: Colors.white,
               ),
             ),
           ],

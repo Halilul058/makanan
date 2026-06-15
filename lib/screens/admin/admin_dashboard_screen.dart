@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../services/admin_service.dart';
 import 'food_list_screen.dart';
+import 'order_list_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/auth_provider.dart';
+import '../auth/login_screen.dart';
 
 class AdminDashboardScreen
     extends StatefulWidget {
@@ -62,6 +67,81 @@ class _AdminDashboardScreenState
         title: const Text(
           "Admin Ra Food",
         ),
+
+        actions: [
+
+          IconButton(
+            icon: const Icon(
+              Icons.logout,
+            ),
+
+            onPressed: () async {
+
+              final result =
+              await showDialog<bool>(
+                context: context,
+
+                builder: (_) {
+                  return AlertDialog(
+                    title: const Text(
+                      "Logout",
+                    ),
+
+                    content: const Text(
+                      "Yakin ingin logout?",
+                    ),
+
+                    actions: [
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(
+                            context,
+                            false,
+                          );
+                        },
+
+                        child: const Text(
+                          "Batal",
+                        ),
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(
+                            context,
+                            true,
+                          );
+                        },
+
+                        child: const Text(
+                          "Ya",
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (result != true) return;
+
+              await context
+                  .read<AuthProvider>()
+                  .logout();
+
+              if (!context.mounted) return;
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                  const LoginScreen(),
+                ),
+                    (route) => false,
+              );
+            },
+          ),
+        ],
       ),
 
       body: SingleChildScrollView(
@@ -261,6 +341,38 @@ class _AdminDashboardScreenState
                 },
               ),
             ),
+
+            const SizedBox(
+              height: 12,
+            ),
+
+            SizedBox(
+              width: double.infinity,
+
+              child: ElevatedButton.icon(
+                icon: const Icon(
+                  Icons.receipt_long,
+                ),
+
+                label: const Text(
+                  "Kelola Pesanan",
+                ),
+
+                onPressed: () {
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                      const OrderListScreen(),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+
+
           ],
         ),
       ),

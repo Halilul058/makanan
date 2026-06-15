@@ -142,4 +142,42 @@ class OrderService {
       [orderId],
     );
   }
+
+  Future<List<Map<String, dynamic>>>
+  getAllOrders() async {
+
+    final db =
+    await dbHelper.database;
+
+    return await db.rawQuery('''
+    SELECT
+    orders.*,
+    users.name as user_name
+
+    FROM orders
+
+    JOIN users
+    ON orders.user_id = users.id
+
+    ORDER BY orders.id DESC
+  ''');
+  }
+
+  Future<int> updateOrderStatus({
+    required int orderId,
+    required String status,
+  }) async {
+
+    final db =
+    await dbHelper.database;
+
+    return await db.update(
+      'orders',
+      {
+        'status': status,
+      },
+      where: 'id = ?',
+      whereArgs: [orderId],
+    );
+  }
 }
